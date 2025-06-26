@@ -1,0 +1,180 @@
+{
+    "$schema": "https://raw.githubusercontent.com/revisit-studies/study/main/src/parser/StudyConfigSchema.json",
+    "studyMetadata": {
+        "title": "LintMe Study",
+        "version": "pilot",
+        "authors": [
+            "Andrew Mcnutt, Hima Mynampaty"
+        ],
+        "date": "2025-06-26",
+        "description": "Usability Study of LintMe: A Custom Markdown Linting Tool",
+        "organizations": [
+            "University of Utah",
+            "SCI"
+        ]
+    },
+    "uiConfig": {
+        "contactEmail": "u1528521@umail.utah.edu",
+        "helpTextPath": "lintMe-study/assets/help.md",
+        "logoPath": "revisitAssets/revisitLogoSquare.svg",
+        "withProgressBar": true,
+        "autoDownloadStudy": false,
+        "sidebar": true
+    },
+    "components": {
+        "introduction": {
+            "type": "markdown",
+            "path": "lintMe-study/assets/introduction.md",
+            "response": [
+                {
+                "id": "uid",
+                "prompt": "Please enter your University of Utah ID",
+                "required": true,
+                "location": "belowStimulus",
+                "type": "shortText",
+                "placeholder": "UID",
+                "paramCapture": "U_ID"
+                }
+            ]
+        },
+        "qualifications": {
+            "type": "questionnaire",
+            "response": [
+                {
+                "id": "ageCheck",
+                "prompt": "Are you 18 years of age or older?",
+                "required": true,
+                "location": "belowStimulus",
+                "type": "radio",
+                "options": [
+                    "Yes, I am 18 or older",
+                    "No, I am under 18"
+                ]
+                },
+                {
+                "id": "readmeFamiliarity",
+                "prompt": "How familiar are you with README or markdown files?",
+                "required": true,
+                "location": "belowStimulus",
+                "type": "radio",
+                "options": [
+                    "Not familiar at all",
+                    "Somewhat familiar",
+                    "Very familiar"
+                ]
+                },
+                {
+                "id": "linterFamiliarity",
+                "prompt": "How familiar are you with the concept of linters or linting tools?",
+                "required": true,
+                "location": "belowStimulus",
+                "type": "radio",
+                "options": [
+                    "Not familiar at all",
+                    "Somewhat familiar",
+                    "Very familiar"
+                ]
+                }
+            ]
+        },
+        "unqualified": {
+            "type": "markdown",
+            "path": "lintMe-study/assets/unqualified.md",
+            "response": []
+        },
+        "consent": {
+            "type": "markdown",
+            "path": "lintMe-study/assets/consent.md",
+            "nextButtonText": "Agree",
+            "response": [
+                {
+                "id": "signature",
+                "prompt": "Your signature",
+                "required": true,
+                "location": "belowStimulus",
+                "type": "shortText",
+                "placeholder": "Please provide your signature"
+                },
+                {
+                "id": "accept",
+                "prompt": "Do you consent to the study and wish to continue?",
+                "required": true,
+                "requiredValue": "yes",
+                "location": "belowStimulus",
+                "type": "radio",
+                "options": [
+                    {
+                    "label": "Decline",
+                    "value": "no"
+                    },
+                    {
+                    "label": "Accept",
+                    "value": "yes"
+                    }
+                ]
+                }
+            ]
+        },
+        "task": {
+            "type": "questionnaire",
+            "response": [
+                {
+                    "id": "q1-name",
+                    "prompt": "What is your first name?",
+                    "required": true,
+                    "location": "aboveStimulus",
+                    "type": "longText",
+                    "placeholder": "Please enter your first name"
+                },
+                {
+                    "id": "q2-color",
+                    "prompt": "What is your favorite color?",
+                    "required": true,
+                    "location": "aboveStimulus",
+                    "type": "dropdown",
+                    "placeholder": "Please choose your favorite color",
+                    "options": ["Red", "Blue", "My favorite color is not shown here."]
+                }
+            ]
+        }
+    },
+
+    "sequence": {
+    "order": "fixed",
+    "components": [
+        "introduction",
+        {
+        "components": ["qualifications"],
+        "order": "fixed",
+        "skip": [
+            {
+                "name": "qualifications",
+                "check": "response",
+                "responseId": "ageCheck",
+                "to": "unqualified",
+                "comparison": "equal",
+                "value": "No, I am under 18"
+            },
+            {
+                "name": "qualifications",
+                "check": "response",
+                "responseId": "readmeFamiliarity",
+                "to": "unqualified",
+                "comparison": "equal",
+                "value": "Not familiar at all"
+            }
+        ]
+        },
+        "consent",
+        "task",
+        {
+            "components": [
+                "unqualified"
+            ],
+            "order": "fixed",
+            "id": "unqualified"
+        }
+    ]
+    }
+
+}
